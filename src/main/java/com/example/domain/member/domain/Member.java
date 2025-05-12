@@ -1,0 +1,36 @@
+package com.example.domain.member.domain;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import com.example.domain.chatRoom.domain.ChatRoom;
+import com.example.domain.message.domain.Message;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Getter
+@Setter
+@RequiredArgsConstructor
+public class Member {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+    private String email;
+    private String password;
+
+    @ManyToMany(mappedBy = "members")
+    private Set<ChatRoom> chatRooms = new HashSet<>();
+
+    @OneToMany(mappedBy = "sender")
+    private Set<Message> messages = new HashSet<>();
+}
