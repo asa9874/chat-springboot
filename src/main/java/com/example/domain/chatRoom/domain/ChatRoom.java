@@ -6,12 +6,11 @@ import java.util.Set;
 import com.example.domain.member.domain.Member;
 import com.example.domain.message.domain.Message;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
@@ -30,9 +29,8 @@ public class ChatRoom {
     private String roomDescription;
 
     @ManyToMany
-    @JoinTable(name = "chatroom_member", joinColumns = @JoinColumn(name = "chatroom_id"), inverseJoinColumns = @JoinColumn(name = "member_id"))
     private Set<Member> members = new HashSet<>();
 
-    @OneToMany(mappedBy = "chatRoom")
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
     private Set<Message> messages = new HashSet<>();
 }
