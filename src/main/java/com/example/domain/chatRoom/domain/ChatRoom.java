@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,9 @@ public class ChatRoom {
     private Long id;
     private String roomName;
     private String roomDescription;
+
+    @ManyToOne
+    private Member owner;
 
     @ManyToMany
     private Set<Member> members = new HashSet<>();

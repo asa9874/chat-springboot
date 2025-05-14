@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.domain.chatRoom.dto.request.ChatRoomCreateRequestDto;
 import com.example.domain.chatRoom.dto.response.ChatRoomResponseDto;
 import com.example.domain.message.dto.response.MessageResponseDto;
+
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
 @RequestMapping("/api/chatroom")
@@ -36,7 +39,7 @@ public class ChatRoomController {
     }
 
     @PostMapping
-    public ResponseEntity<ChatRoomResponseDto> createChatRoom(ChatRoomResponseDto chatRoomRequest) {
+    public ResponseEntity<ChatRoomResponseDto> createChatRoom(@RequestBody ChatRoomCreateRequestDto requestDto) {
         return ResponseEntity.ok().build();
     }
 
@@ -44,4 +47,6 @@ public class ChatRoomController {
     public ResponseEntity<MessageResponseDto> sendMessage(Long chatRoomId) {
         return ResponseEntity.ok().build();
     }
+
+
 }

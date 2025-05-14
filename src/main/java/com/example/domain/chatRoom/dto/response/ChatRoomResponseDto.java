@@ -18,6 +18,8 @@ public class ChatRoomResponseDto {
     private String lastMessage;
     private String lastMessageTime;
     private String lastMessageSender;
+    private Long ownerId;
+    private String ownerName;
 
 
 
@@ -31,6 +33,8 @@ public class ChatRoomResponseDto {
                 .lastMessage(chatRoom.getMessages().isEmpty() ? null : chatRoom.getMessages().iterator().next().getContent())
                 .lastMessageTime(chatRoom.getMessages().isEmpty() ? null : chatRoom.getMessages().iterator().next().getTimestamp().toString())
                 .lastMessageSender(chatRoom.getMessages().isEmpty() ? null : chatRoom.getMessages().iterator().next().getSender().getName())
+                .ownerName(chatRoom.getOwner().getName())
+                .ownerId(chatRoom.getOwner().getId())
                 .build();
     }
 }
