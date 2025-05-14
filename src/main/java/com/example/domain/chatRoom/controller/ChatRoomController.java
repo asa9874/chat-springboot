@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.domain.chatRoom.dto.response.ChatRoomResponseDto;
+import com.example.domain.message.dto.response.MessageResponseDto;
 
 @RestController
 @RequestMapping("/api/chatroom")
@@ -17,5 +19,29 @@ public class ChatRoomController {
     public ResponseEntity<List<ChatRoomResponseDto>> getChatRooms() {
         return ResponseEntity.ok().build();
     }
-    
+
+    @GetMapping("/{memberId}")
+    public ResponseEntity<List<ChatRoomResponseDto>> getChatRoomsByMemberId(Long memberId) {
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{chatRoomId}")
+    public ResponseEntity<ChatRoomResponseDto> getChatRoomById(Long chatRoomId) {
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("{chatRoomId}/messages")
+    public ResponseEntity<List<MessageResponseDto>> getMessagesByChatRoomId(Long chatRoomId) {
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping
+    public ResponseEntity<ChatRoomResponseDto> createChatRoom(ChatRoomResponseDto chatRoomRequest) {
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{chatRoomId}/messages")
+    public ResponseEntity<MessageResponseDto> sendMessage(Long chatRoomId) {
+        return ResponseEntity.ok().build();
+    }
 }
