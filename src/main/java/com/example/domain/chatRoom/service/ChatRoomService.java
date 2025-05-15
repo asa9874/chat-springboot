@@ -11,6 +11,7 @@ import com.example.domain.chatRoom.dto.response.ChatRoomResponseDto;
 import com.example.domain.chatRoom.repository.ChatRoomRepository;
 import com.example.domain.member.domain.Member;
 import com.example.domain.member.repository.MemberRepository;
+import com.example.domain.message.dto.response.MessageResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,6 +33,14 @@ public class ChatRoomService {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new RuntimeException("채팅방없음"));
         return ChatRoomResponseDto.from(chatRoom);
+    }
+
+    public List<MessageResponseDto> getMessagesByChatRoomId(Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new RuntimeException("채팅방없음"));
+        return chatRoom.getMessages().stream()
+                .map(MessageResponseDto::from)
+                .toList();
     }
 
     public ChatRoomResponseDto createChatRoom(ChatRoomCreateRequestDto requestDto) {
@@ -64,5 +73,6 @@ public class ChatRoomService {
                 .orElseThrow(() -> new RuntimeException("채팅방없음"));
         chatRoomRepository.delete(chatRoom);
     }
+
 
 }

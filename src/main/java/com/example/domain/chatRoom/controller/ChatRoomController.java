@@ -16,7 +16,6 @@ import com.example.domain.chatRoom.dto.request.ChatRoomUpdateRequestDto;
 import com.example.domain.chatRoom.dto.response.ChatRoomResponseDto;
 import com.example.domain.chatRoom.service.ChatRoomService;
 import com.example.domain.message.dto.response.MessageResponseDto;
-import com.example.domain.message.service.MessageService;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
-    private final MessageService messageService;
 
     @GetMapping
     public ResponseEntity<List<ChatRoomResponseDto>> getChatRooms() {
@@ -43,7 +41,7 @@ public class ChatRoomController {
 
     @GetMapping("{chatRoomId}/messages")
     public ResponseEntity<List<MessageResponseDto>> getMessagesByChatRoomId(@PathVariable Long chatRoomId) {
-        List<MessageResponseDto> messages = messageService.getMessagesByChatRoomId(chatRoomId);
+        List<MessageResponseDto> messages = chatRoomService.getMessagesByChatRoomId(chatRoomId);
         return ResponseEntity.ok().body(messages);
     }
     @PostMapping
