@@ -15,21 +15,29 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.domain.member.dto.request.MemberRegisterRequestDto;
 import com.example.domain.member.dto.request.MemberUpdateRequestDto;
 import com.example.domain.member.dto.response.MemberResponseDto;
+import com.example.domain.member.service.MemberService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/member")
 public class MemberController {
+    private final MemberService memberService;
 
     @GetMapping
     public ResponseEntity<List<MemberResponseDto>> getMembers() {
-        return ResponseEntity.ok().build();
+        List<MemberResponseDto> responseDtos = memberService.getMembers();
+        return ResponseEntity.ok().body(responseDtos);
     }
 
     @GetMapping("/{memberId}")
     public ResponseEntity<MemberResponseDto> getMember(@PathVariable Long memberId) {
-        return ResponseEntity.ok().build();
+        MemberResponseDto responseDto = memberService.getMember(memberId);
+        return ResponseEntity.ok().body(responseDto);
     }
 
+    // TODO: 추후 JWT 인증객체로
     @GetMapping("/me")
     public ResponseEntity<MemberResponseDto> getMyInfo() {
         return ResponseEntity.ok().build();
@@ -40,19 +48,28 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/{memberId}/chat-rooms")
+    public ResponseEntity<List<Long>> getChatRoomIdsByMemberId(@PathVariable Long memberId) {
+        List<Long> chatRoomIds = memberService.getChatRoomIdsByMemberId(memberId);
+        return ResponseEntity.ok().body(chatRoomIds);
+    }
+
     @PostMapping("register")
     public ResponseEntity<MemberResponseDto> register(@RequestBody MemberRegisterRequestDto requestDto) {
-        return ResponseEntity.ok().build();
+        MemberResponseDto responseDto = memberService.register(requestDto);
+        return ResponseEntity.ok().body(responseDto);
     }
 
     @DeleteMapping("/{memberId}")
     public ResponseEntity<Void> deleteMember(@PathVariable Long memberId) {
-        return ResponseEntity.ok().build();
+        memberService.deleteMember(memberId);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{memberId}")
     public ResponseEntity<MemberResponseDto> updateMember(@PathVariable Long memberId,
             @RequestBody MemberUpdateRequestDto requestDto) {
-        return ResponseEntity.ok().build();
+        MemberResponseDto responseDto = memberService.updateMember(memberId, requestDto);
+        return ResponseEntity.ok().body(responseDto);
     }
 }

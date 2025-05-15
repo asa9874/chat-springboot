@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -20,6 +21,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
+@Builder
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,8 +31,10 @@ public class Member {
     private String password;
 
     @ManyToMany(mappedBy = "members")
+    @Builder.Default
     private Set<ChatRoom> chatRooms = new HashSet<>();
 
     @OneToMany(mappedBy = "sender")
+    @Builder.Default
     private Set<Message> messages = new HashSet<>();
 }
