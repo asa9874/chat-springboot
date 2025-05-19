@@ -1,5 +1,6 @@
 package com.example.domain.message.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -43,7 +44,7 @@ public class MessageService {
         ChatRoom chatRoom = chatRoomRepository.findById(requestDto.getChatRoomId())
                 .orElseThrow(() -> new IllegalArgumentException("Chat room not found"));
 
-        if (!AuthUtil.isAdmin() && !AuthUtil.isEqualMember(sender.getId())) {
+        if (!AuthUtil.isAdmin() && (!AuthUtil.isEqualMember(sender.getId()) || !AuthUtil.isChatRoomMember(chatRoom))) {
             throw new RuntimeException("권한없음");
         }
 
@@ -51,6 +52,7 @@ public class MessageService {
                 .content(requestDto.getContent())
                 .sender(sender)
                 .chatRoom(chatRoom)
+                .timestamp(LocalDateTime.now())
                 .build();
         messageRepository.save(message);
         return MessageResponseDto.from(message);
