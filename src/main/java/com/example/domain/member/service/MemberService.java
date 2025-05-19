@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.domain.chatRoom.dto.response.ChatRoomResponseDto;
 import com.example.domain.member.domain.Member;
 import com.example.domain.member.dto.request.MemberRegisterRequestDto;
 import com.example.domain.member.dto.request.MemberUpdateRequestDto;
@@ -32,11 +33,11 @@ public class MemberService {
         return MemberResponseDto.from(member);
     }
 
-    public List<Long> getChatRoomIdsByMemberId(Long memberId) {
+    public List<ChatRoomResponseDto> getChatRoomsByMemberId(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
         return member.getChatRooms().stream()
-                .map(chatRoom -> chatRoom.getId())
+                .map(ChatRoomResponseDto::from)
                 .toList();
     }
 

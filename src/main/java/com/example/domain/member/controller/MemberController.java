@@ -3,6 +3,7 @@ package com.example.domain.member.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.domain.chatRoom.dto.response.ChatRoomResponseDto;
 import com.example.domain.member.dto.request.MemberRegisterRequestDto;
 import com.example.domain.member.dto.request.MemberUpdateRequestDto;
 import com.example.domain.member.dto.response.MemberResponseDto;
 import com.example.domain.member.service.MemberService;
+import com.example.global.jwt.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,18 +42,20 @@ public class MemberController {
 
     // TODO: 추후 JWT 인증객체로
     @GetMapping("/me")
-    public ResponseEntity<MemberResponseDto> getMyInfo() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<MemberResponseDto> getMyInfo(@AuthenticationPrincipal CustomUserDetails member) {
+        MemberResponseDto responseDto = memberService.getMember(member.getId());
+        return ResponseEntity.ok().body(responseDto);
     }
 
-    @GetMapping("/me/chat-rooms")
-    public ResponseEntity<List<Long>> getMyChatRoomIds() {
-        return ResponseEntity.ok().build();
+    @GetMapping("/me/chatrooms")
+    public ResponseEntity<List<ChatRoomResponseDto>> getMyChatRoomIds(@AuthenticationPrincipal CustomUserDetails member) {
+        List<ChatRoomResponseDto> responseDto = memberService.getChatRoomsByMemberId(member.getId());
+        return ResponseEntity.ok().body(responseDto);
     }
 
-    @GetMapping("/{memberId}/chat-rooms")
-    public ResponseEntity<List<Long>> getChatRoomIdsByMemberId(@PathVariable Long memberId) {
-        List<Long> chatRoomIds = memberService.getChatRoomIdsByMemberId(memberId);
+    @GetMapping("/{memberId}/chatrooms")
+    public ResponseEntity<List<ChatRoomResponseDto>> getChatRoomIdsByMemberId(@PathVariable Long memberId) {
+        List<ChatRoomResponseDto> chatRoomIds = memberService.getChatRoomsByMemberId(memberId);
         return ResponseEntity.ok().body(chatRoomIds);
     }
 
