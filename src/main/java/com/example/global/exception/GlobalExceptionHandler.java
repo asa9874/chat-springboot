@@ -27,4 +27,11 @@ public class GlobalExceptionHandler {
         String apiResponse = "Unexpected error: " + ex.getMessage();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
     }   
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<String> handleJwtException(JwtException ex) {
+        log.error("JWT error: {}", ex.getMessage());
+        String apiResponse = "JWT error: " + ex.getMessage();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiResponse);
+    }
 }

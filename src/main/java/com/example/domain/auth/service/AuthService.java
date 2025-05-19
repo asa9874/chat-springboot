@@ -7,6 +7,7 @@ import com.example.domain.auth.dto.request.LoginRequestDto;
 import com.example.domain.auth.dto.response.LoginResponseDto;
 import com.example.domain.member.domain.Member;
 import com.example.domain.member.repository.MemberRepository;
+import com.example.global.jwt.JwtTokenProvider;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public LoginResponseDto login(LoginRequestDto requestdDto) {
         Member member =memberRepository.findByEmail(requestdDto.getEmail())
@@ -24,10 +26,7 @@ public class AuthService {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
 
-        //TODO: 토큰 생성로직
-        String token = "추가해 ㅋ";
-
-
+        String token = jwtTokenProvider.createToken(member.getEmail(), member.getRole().name(), member.getId());
         return new LoginResponseDto(token);
     }
 }

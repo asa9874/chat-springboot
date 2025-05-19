@@ -7,6 +7,8 @@ import com.example.domain.chatRoom.domain.ChatRoom;
 import com.example.domain.message.domain.Message;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -39,4 +41,12 @@ public class Member {
     @OneToMany(mappedBy = "sender")
     @Builder.Default
     private Set<Message> messages = new HashSet<>();
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private Role role = Role.USER;
+
+    public enum Role {
+        USER, ADMIN
+    }
 }
