@@ -3,6 +3,7 @@ package com.example.domain.message.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,36 +16,46 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.domain.message.dto.request.MessageCreateRequestDto;
 import com.example.domain.message.dto.request.MessageUpdateRequestDto;
 import com.example.domain.message.dto.response.MessageResponseDto;
+import com.example.domain.message.service.MessageService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/message")
+@RequiredArgsConstructor
 public class MessageController {
+    private final MessageService messageService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<MessageResponseDto>> getMessages() {
-        return ResponseEntity.ok().build();
+        List<MessageResponseDto> messages = messageService.getMessages();
+        return ResponseEntity.ok().body(messages);
     }
 
     @GetMapping("/{messageId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageResponseDto> getMessage(@PathVariable Long messageId) {
-        return ResponseEntity.ok().build();
+        MessageResponseDto message = messageService.getMessage(messageId);
+        return ResponseEntity.ok().body(message);
     }
 
-    // TODO: MemberID는 추후 인증개체로
     @PostMapping
     public ResponseEntity<MessageResponseDto> createMessage(@RequestBody MessageCreateRequestDto requestDto) {
-        return ResponseEntity.ok().build();
+        MessageResponseDto message = messageService.createMessage(requestDto);
+        return ResponseEntity.status(201).body(message);
     }
 
-    // TODO: MemberID는 추후 인증개체로
     @DeleteMapping("/{messageId}")
-    public ResponseEntity<Void> deleteMessage() {
+    public ResponseEntity<Void> deleteMessage(@PathVariable Long messageId) {
+        messageService.deleteMessage(messageId);
         return ResponseEntity.noContent().build();
     }
 
-    // TODO: MemberID는 추후 인증개체로
     @PutMapping("/{messageId}")
-    public ResponseEntity<MessageResponseDto> updateMessage(@RequestBody MessageUpdateRequestDto requestDto) {
+    public ResponseEntity<MessageResponseDto> updateMessage(@PathVariable Long messageId,
+            @RequestBody MessageUpdateRequestDto requestDto) {
+        messageService.updateMessage(messageId, requestDto);
         return ResponseEntity.ok().body(null);
     }
 }
