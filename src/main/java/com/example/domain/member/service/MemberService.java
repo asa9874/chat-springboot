@@ -2,6 +2,7 @@ package com.example.domain.member.service;
 
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.domain.member.domain.Member;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public List<MemberResponseDto> getMembers() {
         List<Member> members = memberRepository.findAll();
@@ -40,10 +42,11 @@ public class MemberService {
 
     // TODO 추후 PassWordEncoder로 암호화
     public MemberResponseDto register(MemberRegisterRequestDto requestDto) {
+        String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
         Member member = Member.builder()
                 .name(requestDto.getName())
                 .email(requestDto.getEmail())
-                .password(requestDto.getPassword())
+                .password(encodedPassword)
                 .build();
         Member savedMember = memberRepository.save(member);
         return MemberResponseDto.from(savedMember);
