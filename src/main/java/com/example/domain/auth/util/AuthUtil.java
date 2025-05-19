@@ -5,7 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.example.domain.chatRoom.domain.ChatRoom;
-import com.example.domain.member.domain.Member;
+import com.example.global.jwt.CustomUserDetails;
 
 @Component
 public class AuthUtil {
@@ -29,36 +29,17 @@ public class AuthUtil {
     }
 
     public static boolean isChatRoomMember(ChatRoom chatRoom) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || authentication.getPrincipal() == null) {
-            return false;
-        }
-
-        Member member = (Member) authentication.getPrincipal();
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return chatRoom.getMembers().stream()
-                .anyMatch(chatRoomMember -> chatRoomMember.getId().equals(member.getId()));
+                .anyMatch(member -> member.getId().equals(userDetails.getId()));
     }
 
     public static boolean isChatRoomOwner(ChatRoom chatRoom) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || authentication.getPrincipal() == null) {
-            return false;
-        }
-
-        Member member = (Member) authentication.getPrincipal();
-        return chatRoom.getOwner().getId().equals(member.getId());
+        return isEqualMember(chatRoom.getOwner().getId());
     }
 
     public static boolean isEqualMember(Long memberId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || authentication.getPrincipal() == null) {
-            return false;
-        }
-
-        Member authenticatedMember = (Member) authentication.getPrincipal();
-        return authenticatedMember.getId().equals(memberId);
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userDetails.getId().equals(memberId);
     }
 }

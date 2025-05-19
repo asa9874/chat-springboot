@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,12 +19,13 @@ import com.example.domain.chatRoom.dto.response.ChatRoomResponseDto;
 import com.example.domain.chatRoom.service.ChatRoomService;
 import com.example.domain.message.dto.response.MessageResponseDto;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/chatroom")
+@Log4j2
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;

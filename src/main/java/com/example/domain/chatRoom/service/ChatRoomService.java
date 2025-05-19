@@ -1,6 +1,8 @@
 package com.example.domain.chatRoom.service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -15,9 +17,11 @@ import com.example.domain.member.repository.MemberRepository;
 import com.example.domain.message.dto.response.MessageResponseDto;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
@@ -53,7 +57,11 @@ public class ChatRoomService {
     public ChatRoomResponseDto createChatRoom(ChatRoomCreateRequestDto requestDto) {
         Member owner = memberRepository.findById(requestDto.getOwnerId())
                 .orElseThrow(() -> new RuntimeException("회원없음"));
-        
+        Set<Member> members = requestDto.getMemberIds().stream()
+                .map(memberId -> memberRepository.findById(memberId)
+                        .orElseThrow(() -> new RuntimeException("회원없음")))
+                .collect(Collectors.toSet());
+
         if(!AuthUtil.isAdmin() && !AuthUtil.isEqualMember(owner.getId())) {
             throw new RuntimeException("권한없음");
         }
@@ -62,6 +70,7 @@ public class ChatRoomService {
                 .roomName(requestDto.getRoomName())
                 .roomDescription(requestDto.getRoomDescription())
                 .owner(owner)
+                .members(members)
                 .build();
 
         ChatRoom savedChatRoom = chatRoomRepository.save(chatRoom);
