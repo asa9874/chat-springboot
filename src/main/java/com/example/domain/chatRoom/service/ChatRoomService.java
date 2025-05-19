@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.domain.auth.util.AuthUtil;
 import com.example.domain.chatRoom.domain.ChatRoom;
 import com.example.domain.chatRoom.dto.request.ChatRoomCreateRequestDto;
 import com.example.domain.chatRoom.dto.request.ChatRoomUpdateRequestDto;
@@ -32,12 +33,18 @@ public class ChatRoomService {
     public ChatRoomResponseDto getChatRoomById(Long chatRoomId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new RuntimeException("채팅방없음"));
+        if (!AuthUtil.isAdminOrChatRoomMember(chatRoom)) {
+            throw new RuntimeException("권한없음");
+        }
         return ChatRoomResponseDto.from(chatRoom);
     }
 
     public List<MessageResponseDto> getMessagesByChatRoomId(Long chatRoomId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new RuntimeException("채팅방없음"));
+        if (!AuthUtil.isAdminOrChatRoomMember(chatRoom)) {
+            throw new RuntimeException("권한없음");
+        }
         return chatRoom.getMessages().stream()
                 .map(MessageResponseDto::from)
                 .toList();
@@ -46,6 +53,10 @@ public class ChatRoomService {
     public ChatRoomResponseDto createChatRoom(ChatRoomCreateRequestDto requestDto) {
         Member owner = memberRepository.findById(requestDto.getOwnerId())
                 .orElseThrow(() -> new RuntimeException("회원없음"));
+        
+        if(!AuthUtil.isAdmin() && !AuthUtil.isEqualMember(owner.getId())) {
+            throw new RuntimeException("권한없음");
+        }
 
         ChatRoom chatRoom = ChatRoom.builder()
                 .roomName(requestDto.getRoomName())
@@ -60,7 +71,9 @@ public class ChatRoomService {
     public ChatRoomResponseDto updateChatRoom(Long chatRoomId, ChatRoomUpdateRequestDto requestDto) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new RuntimeException("채팅방없음"));
-
+        if (!AuthUtil.isAdminOrChatRoomOwner(chatRoom)) {
+            throw new RuntimeException("권한없음");
+        }
         chatRoom.setRoomName(requestDto.getRoomName());
         chatRoom.setRoomDescription(requestDto.getRoomDescription());
 
@@ -71,8 +84,10 @@ public class ChatRoomService {
     public void deleteChatRoom(Long chatRoomId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new RuntimeException("채팅방없음"));
+        if (!AuthUtil.isAdminOrChatRoomOwner(chatRoom)) {
+            throw new RuntimeException("권한없음");
+        }
         chatRoomRepository.delete(chatRoom);
     }
-
 
 }

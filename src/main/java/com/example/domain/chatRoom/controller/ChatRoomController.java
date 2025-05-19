@@ -3,6 +3,7 @@ package com.example.domain.chatRoom.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,7 @@ public class ChatRoomController {
     private final ChatRoomService chatRoomService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<ChatRoomResponseDto>> getChatRooms() {
         List<ChatRoomResponseDto> chatRooms = chatRoomService.getChatRooms();
         return ResponseEntity.ok().body(chatRooms);
@@ -44,6 +46,7 @@ public class ChatRoomController {
         List<MessageResponseDto> messages = chatRoomService.getMessagesByChatRoomId(chatRoomId);
         return ResponseEntity.ok().body(messages);
     }
+
     @PostMapping
     public ResponseEntity<ChatRoomResponseDto> createChatRoom(@RequestBody ChatRoomCreateRequestDto requestDto) {
         ChatRoomResponseDto chatRoom = chatRoomService.createChatRoom(requestDto);
@@ -64,17 +67,16 @@ public class ChatRoomController {
     }
 
     // @PostMapping("/{chatRoomId}/messages")
-    // public ResponseEntity<MessageResponseDto> sendMessage(@PathVariable Long chatRoomId) {
-    //     return ResponseEntity.ok().build();
+    // public ResponseEntity<MessageResponseDto> sendMessage(@PathVariable Long
+    // chatRoomId) {
+    // return ResponseEntity.ok().build();
     // }
 
-
-    
-        
-    //TODO: 이거아마 회원..?
+    // TODO: 이거아마 회원..?
     // @GetMapping("/{memberId}")
-    // public ResponseEntity<List<ChatRoomResponseDto>> getChatRoomsByMemberId(@PathVariable Long memberId) {
-    //     return ResponseEntity.ok().build();
+    // public ResponseEntity<List<ChatRoomResponseDto>>
+    // getChatRoomsByMemberId(@PathVariable Long memberId) {
+    // return ResponseEntity.ok().build();
     // }
 
 }
