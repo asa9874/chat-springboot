@@ -21,15 +21,19 @@ import com.example.domain.member.dto.response.MemberResponseDto;
 import com.example.domain.member.service.MemberService;
 import com.example.global.jwt.CustomUserDetails;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "회원API", description = "/member")
 @RequestMapping("/api/member")
 public class MemberController {
     private final MemberService memberService;
 
     @GetMapping
+    @Operation(summary = "맴버 전체 조회", description = "모든 멤버를 조회함(ADMIN)")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<MemberResponseDto>> getMembers() {
         List<MemberResponseDto> responseDtos = memberService.getMembers();
@@ -37,6 +41,7 @@ public class MemberController {
     }
 
     @GetMapping("/{memberId}")
+    @Operation(summary = "특정 맴버 조회", description = "특정 맴버를 조회함")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #memberId == authentication.principal.id")
     public ResponseEntity<MemberResponseDto> getMember(@PathVariable Long memberId) {
         MemberResponseDto responseDto = memberService.getMember(memberId);
@@ -44,12 +49,14 @@ public class MemberController {
     }
 
     @GetMapping("/me")
+    @Operation(summary = "내 정보 조회", description = "JWT 기반으로 내정보 조회")
     public ResponseEntity<MemberResponseDto> getMyInfo(@AuthenticationPrincipal CustomUserDetails member) {
         MemberResponseDto responseDto = memberService.getMember(member.getId());
         return ResponseEntity.ok().body(responseDto);
     }
 
     @GetMapping("/me/chatrooms")
+    @Operation(summary = "내 채팅방들 조회", description = "JWT 기반으로 내가 들어가있는 채팅방들 조회")
     public ResponseEntity<List<ChatRoomResponseDto>> getMyChatRoomIds(
             @AuthenticationPrincipal CustomUserDetails member) {
         List<ChatRoomResponseDto> responseDto = memberService.getChatRoomsByMemberId(member.getId());
@@ -57,6 +64,7 @@ public class MemberController {
     }
 
     @GetMapping("/{memberId}/chatrooms")
+    @Operation(summary = "특정 맴버의 채팅방들 조회", description = "특정 맴버의 채팅방들 조회함")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #memberId == authentication.principal.id")
     public ResponseEntity<List<ChatRoomResponseDto>> getChatRoomIdsByMemberId(@PathVariable Long memberId) {
         List<ChatRoomResponseDto> chatRoomIds = memberService.getChatRoomsByMemberId(memberId);
@@ -64,12 +72,14 @@ public class MemberController {
     }
 
     @PostMapping("register")
+    @Operation(summary = "회원가입", description = "회원가입임(일반유저용)")
     public ResponseEntity<MemberResponseDto> register(@RequestBody MemberRegisterRequestDto requestDto) {
         MemberResponseDto responseDto = memberService.register(requestDto);
         return ResponseEntity.ok().body(responseDto);
     }
 
     @DeleteMapping("/{memberId}")
+    @Operation(summary = "회원탈퇴", description = "회원을 삭제함")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #memberId == authentication.principal.id")
     public ResponseEntity<Void> deleteMember(@PathVariable Long memberId) {
         memberService.deleteMember(memberId);
@@ -77,6 +87,7 @@ public class MemberController {
     }
 
     @PutMapping("/{memberId}")
+    @Operation(summary = "회원 정보수정", description = "일단 이름만 수정가능")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #memberId == authentication.principal.id")
     public ResponseEntity<MemberResponseDto> updateMember(@PathVariable Long memberId,
             @RequestBody MemberUpdateRequestDto requestDto) {
