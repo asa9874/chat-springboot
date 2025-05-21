@@ -1,6 +1,8 @@
 package com.example.domain.member.domain;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.example.domain.chatRoom.domain.ChatRoom;
@@ -45,6 +47,14 @@ public class Member {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private Role role = Role.USER;
+
+
+    //이거 친구 단방향으로 설정함 그냥 추가하면 나만 친구로 추가되게 like 카카오톡
+    @ManyToMany
+    @Builder.Default
+    private List<Member> friends = new ArrayList<>();
+
+
 
     public enum Role {
         USER, ADMIN

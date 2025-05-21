@@ -9,6 +9,7 @@ import com.example.domain.chatRoom.dto.response.ChatRoomResponseDto;
 import com.example.domain.member.domain.Member;
 import com.example.domain.member.dto.request.MemberRegisterRequestDto;
 import com.example.domain.member.dto.request.MemberUpdateRequestDto;
+import com.example.domain.member.dto.response.FriendInfoResponseDto;
 import com.example.domain.member.dto.response.MemberResponseDto;
 import com.example.domain.member.repository.MemberRepository;
 
@@ -33,12 +34,45 @@ public class MemberService {
         return MemberResponseDto.from(member);
     }
 
+    public List<FriendInfoResponseDto> getFriendsByMemberId(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+
+        return member.getFriends().stream()
+                .map(FriendInfoResponseDto::from)
+                .toList();
+    }
+
     public List<ChatRoomResponseDto> getChatRoomsByMemberId(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
         return member.getChatRooms().stream()
                 .map(ChatRoomResponseDto::from)
                 .toList();
+    }
+
+    public FriendInfoResponseDto addFriend(Long memberId, Long friendId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+        Member friend = memberRepository.findById(friendId)
+                .orElseThrow(() -> new IllegalArgumentException("Friend not found"));
+
+        member.getFriends().add(friend);
+
+        memberRepository.save(member);
+
+        return FriendInfoResponseDto.from(member);
+    }
+
+    public void removeFriend(Long memberId, Long friendId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+        Member friend = memberRepository.findById(friendId)
+                .orElseThrow(() -> new IllegalArgumentException("Friend not found"));
+
+        member.getFriends().remove(friend);
+
+        memberRepository.save(member);
     }
 
     // TODO 추후 PassWordEncoder로 암호화
@@ -66,7 +100,5 @@ public class MemberService {
         Member updatedMember = memberRepository.save(member);
         return MemberResponseDto.from(updatedMember);
     }
-
-    
 
 }

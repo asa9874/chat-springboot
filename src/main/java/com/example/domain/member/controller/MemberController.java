@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.domain.chatRoom.dto.response.ChatRoomResponseDto;
 import com.example.domain.member.dto.request.MemberRegisterRequestDto;
 import com.example.domain.member.dto.request.MemberUpdateRequestDto;
+import com.example.domain.member.dto.response.FriendInfoResponseDto;
 import com.example.domain.member.dto.response.MemberResponseDto;
 import com.example.domain.member.service.MemberService;
 import com.example.global.jwt.CustomUserDetails;
@@ -55,6 +56,14 @@ public class MemberController {
         return ResponseEntity.ok().body(responseDto);
     }
 
+    @GetMapping("/me/friends")
+    @Operation(summary = "내 친구들 조회", description = "JWT 기반으로 내 친구들 조회")
+    public ResponseEntity<List<FriendInfoResponseDto>> getMyFriends(
+            @AuthenticationPrincipal CustomUserDetails member) {
+        List<FriendInfoResponseDto> responseDtos = memberService.getFriendsByMemberId(member.getId());
+        return ResponseEntity.ok().body(responseDtos);
+    }
+
     @GetMapping("/me/chatrooms")
     @Operation(summary = "내 채팅방들 조회", description = "JWT 기반으로 내가 들어가있는 채팅방들 조회")
     public ResponseEntity<List<ChatRoomResponseDto>> getMyChatRoomIds(
@@ -69,6 +78,32 @@ public class MemberController {
     public ResponseEntity<List<ChatRoomResponseDto>> getChatRoomIdsByMemberId(@PathVariable Long memberId) {
         List<ChatRoomResponseDto> chatRoomIds = memberService.getChatRoomsByMemberId(memberId);
         return ResponseEntity.ok().body(chatRoomIds);
+    }
+
+    @GetMapping("/{memberId}/friends")
+    @Operation(summary = "특정 맴버의 친구들 조회", description = "특정 맴버의 친구들 조회함")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #memberId == authentication.principal.id")
+    public ResponseEntity<List<FriendInfoResponseDto>> getFriendsByMemberId(@PathVariable Long memberId) {
+        List<FriendInfoResponseDto> responseDtos = memberService.getFriendsByMemberId(memberId);
+        return ResponseEntity.ok().body(responseDtos);
+    }
+
+    @PostMapping("/{memberId}/friends/{friendId}")
+    @Operation(summary = "친구 추가", description = "친구를 추가함")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #memberId == authentication.principal.id")
+    public ResponseEntity<FriendInfoResponseDto> addFriend(@PathVariable Long memberId,
+            @PathVariable Long friendId) {
+        FriendInfoResponseDto responseDto = memberService.addFriend(memberId, friendId);
+        return ResponseEntity.ok().body(responseDto);
+    }
+
+    @DeleteMapping("/{memberId}/friends/{friendId}")
+    @Operation(summary = "친구 삭제", description = "친구를 삭제함")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #memberId == authentication.principal.id")
+    public ResponseEntity<Void> deleteFriend(@PathVariable Long memberId,
+            @PathVariable Long friendId) {
+        memberService.removeFriend(memberId, friendId);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("register")
