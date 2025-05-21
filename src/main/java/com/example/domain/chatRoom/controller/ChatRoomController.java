@@ -27,8 +27,8 @@ import lombok.extern.log4j.Log4j2;
 @RestController
 @RequiredArgsConstructor
 @Log4j2
-@Tag(name = "채팅방API", description = "/chatroom")
-@RequestMapping("/api/chatroom")
+@Tag(name = "채팅방API", description = "/chatrooms")
+@RequestMapping("/api/chatrooms")
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
