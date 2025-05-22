@@ -14,11 +14,16 @@ import lombok.NoArgsConstructor;
 public class FriendInfoResponseDto {
     private Long id;
     private String name;
+    private String profileImageUrl;
+    private String profileMessage;
+
 
     public static FriendInfoResponseDto from(Member member) {
         return FriendInfoResponseDto.builder()
                 .id(member.getId())
                 .name(member.getName())
+                .profileImageUrl(member.getProfileImage())
+                .profileMessage(member.getProfileMessage())
                 .build();
     }
 }

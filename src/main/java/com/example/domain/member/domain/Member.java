@@ -35,6 +35,12 @@ public class Member {
     private String name;
     private String email;
     private String password;
+    
+    @Builder.Default
+    private String profileMessage ="기본 상태메시지";
+
+    @Builder.Default
+    private String profileImage = "https://t4.ftcdn.net/jpg/00/53/45/31/360_F_53453175_hVgYVz0WmvOXPd9CNzaUcwcibiGao3CL.jpg";
 
     @ManyToMany(mappedBy = "members")
     @Builder.Default
