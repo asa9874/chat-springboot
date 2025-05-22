@@ -33,6 +33,9 @@ public class ChatRoom {
     private String roomName;
     private String roomDescription;
 
+    @Builder.Default
+    private String roomImage = "https://t4.ftcdn.net/jpg/00/53/45/31/360_F_53453175_hVgYVz0WmvOXPd9CNzaUcwcibiGao3CL.jpg";;
+
     @ManyToOne
     private Member owner;
 

@@ -20,6 +20,7 @@ public class ChatRoomResponseDto {
     private String lastMessageSender;
     private Long ownerId;
     private String ownerName;
+    private String roomImage;
 
 
 
@@ -30,11 +31,12 @@ public class ChatRoomResponseDto {
                 .roomDescription(chatRoom.getRoomDescription())
                 .memberCount((long) chatRoom.getMembers().size())
                 .messageCount((long) chatRoom.getMessages().size())
-                .lastMessage(chatRoom.getMessages().isEmpty() ? null : chatRoom.getMessages().iterator().next().getContent())
-                .lastMessageTime(chatRoom.getMessages().isEmpty() ? null : chatRoom.getMessages().iterator().next().getTimestamp().toString())
-                .lastMessageSender(chatRoom.getMessages().isEmpty() ? null : chatRoom.getMessages().iterator().next().getSender().getName())
+                .lastMessage(chatRoom.getMessages().isEmpty() ? "" : chatRoom.getMessages().iterator().next().getContent())
+                .lastMessageTime(chatRoom.getMessages().isEmpty() ? "" : chatRoom.getMessages().iterator().next().getTimestamp().toString())
+                .lastMessageSender(chatRoom.getMessages().isEmpty() ? "" : chatRoom.getMessages().iterator().next().getSender().getName())
                 .ownerName(chatRoom.getOwner().getName())
                 .ownerId(chatRoom.getOwner().getId())
+                .roomImage(chatRoom.getRoomImage())
                 .build();
     }
 }

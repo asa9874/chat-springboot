@@ -16,7 +16,7 @@ import com.example.domain.member.domain.Member;
 import com.example.domain.member.repository.MemberRepository;
 import com.example.domain.message.domain.Message;
 import com.example.domain.message.repository.MessageRepository;
-
+//copy con local2.mv.db
 @SpringBootTest
 class ChatspringbootApplicationTests {
 
@@ -56,7 +56,7 @@ class ChatspringbootApplicationTests {
 				.roomName("테스트방")
 				.roomDescription("테스트방 설명")
 				.owner(member)
-				.members(Set.of(friends.get(0), friends.get(1)))
+				.members(Set.of(friends.get(0), friends.get(1),member))
 				.build();
 
 		chatRoomRepository.save(chatRoom);
@@ -65,6 +65,7 @@ class ChatspringbootApplicationTests {
 			Message message = Message.builder()
 					.chatRoom(chatRoom)
 					.sender(member)
+					.timestamp(LocalDateTime.now())
 					.content("테스트 메시지 ㅋ" + i)
 					.build();
 			messageRepository.save(message);
@@ -74,6 +75,7 @@ class ChatspringbootApplicationTests {
 			Message message = Message.builder()
 					.chatRoom(chatRoom)
 					.sender(friends.get(0))
+					.timestamp(LocalDateTime.now())
 					.content("친구1메시지임ㅋ" + i)
 					.build();
 			messageRepository.save(message);
