@@ -25,15 +25,23 @@ public class ChatRoomResponseDto {
 
 
     public static ChatRoomResponseDto from(ChatRoom chatRoom) {
+        String lastMessage = "";
+        String lastMessageTime = "";
+        String lastMessageSender = "";
+        if(!chatRoom.getMessages().isEmpty()) {
+            lastMessage = chatRoom.getMessages().get(chatRoom.getMessages().size() - 1).getContent();
+            lastMessageTime = chatRoom.getMessages().get(chatRoom.getMessages().size() - 1).getTimestamp().toString();
+            lastMessageSender = chatRoom.getMessages().get(chatRoom.getMessages().size() - 1).getSender().getName();
+        }
         return ChatRoomResponseDto.builder()
                 .id(chatRoom.getId())
                 .roomName(chatRoom.getRoomName())
                 .roomDescription(chatRoom.getRoomDescription())
                 .memberCount((long) chatRoom.getMembers().size())
                 .messageCount((long) chatRoom.getMessages().size())
-                .lastMessage(chatRoom.getMessages().isEmpty() ? "" : chatRoom.getMessages().iterator().next().getContent())
-                .lastMessageTime(chatRoom.getMessages().isEmpty() ? "" : chatRoom.getMessages().iterator().next().getTimestamp().toString())
-                .lastMessageSender(chatRoom.getMessages().isEmpty() ? "" : chatRoom.getMessages().iterator().next().getSender().getName())
+                .lastMessage(lastMessage)
+                .lastMessageTime(lastMessageTime)
+                .lastMessageSender(lastMessageSender)
                 .ownerName(chatRoom.getOwner().getName())
                 .ownerId(chatRoom.getOwner().getId())
                 .roomImage(chatRoom.getRoomImage())

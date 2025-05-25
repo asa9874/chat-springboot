@@ -1,6 +1,8 @@
 package com.example.domain.chatRoom.domain;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.example.domain.member.domain.Member;
@@ -14,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -44,6 +47,7 @@ public class ChatRoom {
     private Set<Member> members = new HashSet<>();
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
+    @OrderBy("timestamp ASC") 
     @Builder.Default
-    private Set<Message> messages = new HashSet<>();
+    private List<Message> messages = new ArrayList<>();
 }

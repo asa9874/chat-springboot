@@ -58,6 +58,24 @@ public class MessageService {
         return MessageResponseDto.from(message);
     }
 
+    public MessageResponseDto sendMessage(MessageCreateRequestDto requestDto, Long senderId) {
+        if(senderId != requestDto.getSenderId()) {
+            throw new IllegalArgumentException("Sender ID mismatch");
+        }
+        Member sender = memberRepository.findById(requestDto.getSenderId())
+                .orElseThrow(() -> new IllegalArgumentException("Sender not found"));
+        ChatRoom chatRoom = chatRoomRepository.findById(requestDto.getChatRoomId())
+                .orElseThrow(() -> new IllegalArgumentException("Chat room not found"));
+        Message message = Message.builder()
+                .content(requestDto.getContent())
+                .sender(sender)
+                .chatRoom(chatRoom)
+                .timestamp(LocalDateTime.now())
+                .build();
+        messageRepository.save(message);
+        return MessageResponseDto.from(message);
+    }
+
     public void deleteMessage(Long messageId) {
         Message message = messageRepository.findById(messageId)
                 .orElseThrow(() -> new IllegalArgumentException("Message not found"));
