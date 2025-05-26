@@ -4,7 +4,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.domain.message.dto.request.MessageCreateRequestDto;
 import com.example.domain.message.dto.response.MessageResponseDto;
@@ -13,7 +12,6 @@ import com.example.domain.message.service.MessageService;
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping("/ws")
 @RequiredArgsConstructor
 public class MessageWebSocketController {
     private final SimpMessagingTemplate messagingTemplate;

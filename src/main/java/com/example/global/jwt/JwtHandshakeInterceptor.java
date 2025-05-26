@@ -25,7 +25,6 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
                                  WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-        log.error("WebSocket handshake attempt from: {}", request.getRemoteAddress());
         // Query parameter에서 토큰 추출
         String token = getTokenFromQuery(request);
         
