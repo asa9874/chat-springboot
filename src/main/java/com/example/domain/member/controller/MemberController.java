@@ -18,6 +18,7 @@ import com.example.domain.chatRoom.dto.response.ChatRoomResponseDto;
 import com.example.domain.member.dto.request.MemberRegisterRequestDto;
 import com.example.domain.member.dto.request.MemberUpdateRequestDto;
 import com.example.domain.member.dto.response.FriendInfoResponseDto;
+import com.example.domain.member.dto.response.MemberProfileResponseDto;
 import com.example.domain.member.dto.response.MemberResponseDto;
 import com.example.domain.member.service.MemberService;
 import com.example.global.jwt.CustomUserDetails;
@@ -46,6 +47,13 @@ public class MemberController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or #memberId == authentication.principal.id")
     public ResponseEntity<MemberResponseDto> getMember(@PathVariable Long memberId) {
         MemberResponseDto responseDto = memberService.getMember(memberId);
+        return ResponseEntity.ok().body(responseDto);
+    }
+
+    @GetMapping("/{memberId}/profile")
+    @Operation(summary = "특정 맴버 프로필 조회", description = "특정 맴버의 프로필을 조회함(이건 인증 불필요함;)")
+    public ResponseEntity<MemberProfileResponseDto> getMemberProfile(@PathVariable Long memberId) {
+        MemberProfileResponseDto responseDto = memberService.getMemberProfile(memberId);
         return ResponseEntity.ok().body(responseDto);
     }
 

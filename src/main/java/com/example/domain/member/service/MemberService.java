@@ -10,6 +10,7 @@ import com.example.domain.member.domain.Member;
 import com.example.domain.member.dto.request.MemberRegisterRequestDto;
 import com.example.domain.member.dto.request.MemberUpdateRequestDto;
 import com.example.domain.member.dto.response.FriendInfoResponseDto;
+import com.example.domain.member.dto.response.MemberProfileResponseDto;
 import com.example.domain.member.dto.response.MemberResponseDto;
 import com.example.domain.member.repository.MemberRepository;
 
@@ -49,6 +50,12 @@ public class MemberService {
         return member.getChatRooms().stream()
                 .map(ChatRoomResponseDto::from)
                 .toList();
+    }
+
+    public MemberProfileResponseDto getMemberProfile(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+        return MemberProfileResponseDto.from(member);
     }
 
     public FriendInfoResponseDto addFriend(Long memberId, Long friendId) {
