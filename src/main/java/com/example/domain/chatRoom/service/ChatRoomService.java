@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.domain.auth.util.AuthUtil;
 import com.example.domain.chatRoom.domain.ChatRoom;
@@ -99,4 +100,13 @@ public class ChatRoomService {
         chatRoomRepository.delete(chatRoom);
     }
 
+
+    //이거 message websocket에서 사용
+    @Transactional(readOnly = true)
+    public List<Member> findMembersByChatRoomId(Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new RuntimeException("채팅방없음"));
+        return chatRoom.getMembers().stream()
+                .collect(Collectors.toList());
+    }
 }
