@@ -9,6 +9,7 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 import com.example.global.jwt.JwtHandshakeInterceptor;
+import com.example.global.jwt.PrincipalHandshakeHandler;
 
 @Configuration
 @EnableWebSocketMessageBroker // 웹소켓 메시지 브로커 활성화
@@ -18,8 +19,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(@NonNull MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
-        config.setApplicationDestinationPrefixes("/app","/queue");
+        config.enableSimpleBroker("/topic","/queue");
+        config.setApplicationDestinationPrefixes("/app");
         config.setUserDestinationPrefix("/user");
     }
 
@@ -28,6 +29,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws")
                 .setAllowedOrigins("http://localhost:5173", "http://localhost:8080", "http://127.0.0.1:3000")
                 .addInterceptors(jwtHandshakeInterceptor)
+                .setHandshakeHandler(new PrincipalHandshakeHandler())
                 .withSockJS();
     }
     

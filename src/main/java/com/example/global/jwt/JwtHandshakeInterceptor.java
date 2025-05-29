@@ -38,6 +38,7 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
             attributes.put("role", role);
             attributes.put("userId", userId);
             return true;
+            
         }
         log.error("No token found in query parameters");
         return false; // 인증 실패시 연결 거부

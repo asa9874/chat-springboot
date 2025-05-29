@@ -15,9 +15,11 @@ import com.example.domain.message.dto.response.MessageSocketResponseDto;
 import com.example.domain.message.service.MessageService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @Controller
 @RequiredArgsConstructor
+@Log4j2
 public class MessageWebSocketController {
     private final SimpMessagingTemplate messagingTemplate;
     private final MessageService messageService;
@@ -39,6 +41,7 @@ public class MessageWebSocketController {
                         member.getId().toString(),
                         "/queue/messages",
                         responseDto);
+                log.error(member.getId().toString()+responseDto.getContent());
             }
         }
     }
