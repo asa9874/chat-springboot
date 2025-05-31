@@ -43,9 +43,9 @@ public class Message {
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    private Type type = Type.TEXT;
+    private MessageType type = MessageType.TEXT;
 
-    public enum Type {
+    public enum MessageType {
         TEXT, IMAGE, FILE
     }
 }

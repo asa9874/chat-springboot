@@ -9,8 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessageCreateRequestDto {
+public class MessageImageRequestDto {
     private Long chatRoomId;
-    private String content;
     private Long senderId;
 }
