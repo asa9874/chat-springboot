@@ -16,6 +16,7 @@ public class MessageSocketResponseDto {
     private String senderName;
     private String timestamp;
     private Long chatRoomId;
+    private String type;
 
     public static MessageSocketResponseDto from(MessageResponseDto message,Long chatRoomId) {
         return MessageSocketResponseDto.builder()
@@ -25,6 +26,7 @@ public class MessageSocketResponseDto {
                 .senderName(message.getSenderName())
                 .timestamp(message.getTimestamp())
                 .chatRoomId(chatRoomId)
+                .type(message.getType())
                 .build();
     }
 }

@@ -17,6 +17,7 @@ public class MessageResponseDto {
     private Long senderId;
     private String senderName;
     private String timestamp;
+    private String type;
 
     public static MessageResponseDto from(Message message) {
         return MessageResponseDto.builder()
@@ -25,6 +26,7 @@ public class MessageResponseDto {
                 .senderId(message.getSender().getId())
                 .senderName(message.getSender().getName())
                 .timestamp(message.getTimestamp().toString())
+                .type(message.getType().name())
                 .build();
     }
 }
