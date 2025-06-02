@@ -6,6 +6,8 @@ import com.example.domain.chatRoom.domain.ChatRoom;
 import com.example.domain.member.domain.Member;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,4 +40,12 @@ public class Message {
 
     private String content;
     private LocalDateTime timestamp;
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private MessageType type = MessageType.TEXT;
+
+    public enum MessageType {
+        TEXT, IMAGE, FILE
+    }
 }
