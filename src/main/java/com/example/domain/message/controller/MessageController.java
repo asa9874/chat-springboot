@@ -30,6 +30,7 @@ import com.example.domain.message.dto.response.MessageResponseDto;
 import com.example.domain.message.dto.response.MessageSocketResponseDto;
 import com.example.domain.message.service.ImageUploadService;
 import com.example.domain.message.service.MessageService;
+import com.example.domain.message.service.S3ImageUploadService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,7 +43,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/messages")
 public class MessageController {
     private final MessageService messageService;
-    private final ImageUploadService imageUploadService;
     private final SimpMessagingTemplate messagingTemplate;
     private final ChatRoomService chatRoomService;
 
@@ -90,6 +90,33 @@ public class MessageController {
             @Valid @RequestPart("message") MessageImageRequestDto requestDto,
             @RequestParam("file") MultipartFile file) {
         MessageResponseDto savedMessage = messageService.createImageMessage(requestDto, file);
+
+        //브로드 캐스팅
+        messagingTemplate.convertAndSend(
+                "/topic/chat/" + requestDto.getChatRoomId(),
+                savedMessage);
+
+        List<Member> members = chatRoomService.findMembersByChatRoomId(requestDto.getChatRoomId());
+        MessageSocketResponseDto socketDto = MessageSocketResponseDto.from(savedMessage, requestDto.getChatRoomId());
+
+        for (Member member : members) {
+            if (!member.getId().equals(savedMessage.getSenderId())) {
+                messagingTemplate.convertAndSendToUser(
+                        member.getId().toString(),
+                        "/queue/messages",
+                        socketDto);
+            }
+        }
+
+        return ResponseEntity.ok(savedMessage);
+    }
+
+    @PostMapping(value = "/s3/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "S3 이미지 업로드", description = "S3에 이미지를 업로드하고 URL을 반환함")
+    public ResponseEntity<MessageResponseDto> s3UploadImage(
+            @Valid @RequestPart("message") MessageImageRequestDto requestDto,
+            @RequestParam("file") MultipartFile file) {
+        MessageResponseDto savedMessage = messageService.createS3ImageMessage(requestDto, file);
 
         //브로드 캐스팅
         messagingTemplate.convertAndSend(

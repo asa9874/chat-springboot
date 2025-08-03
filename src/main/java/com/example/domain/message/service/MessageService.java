@@ -28,6 +28,7 @@ public class MessageService {
     private final MemberRepository memberRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ImageUploadService imageUploadService;
+    private final S3ImageUploadService s3ImageUploadService;
 
     public List<MessageResponseDto> getMessages() {
         List<Message> messages = messageRepository.findAll();
@@ -75,10 +76,39 @@ public class MessageService {
         String imageUrl;
 
         try {
-            imageUrl = "http://localhost:8080/"+imageUploadService.uploadImage(imageFile);
+            imageUrl = "http://localhost:8080/" + imageUploadService.uploadImage(imageFile);
         } catch (IOException e) {
             throw new RuntimeException("이미지 업로드 실패", e);
         }
+        Message message = Message.builder()
+                .content(imageUrl)
+                .sender(sender)
+                .chatRoom(chatRoom)
+                .timestamp(LocalDateTime.now())
+                .type(Message.MessageType.IMAGE)
+                .build();
+        messageRepository.save(message);
+        return MessageResponseDto.from(message);
+    }
+
+    public MessageResponseDto createS3ImageMessage(MessageImageRequestDto requestDto, MultipartFile imageFile) {
+        Member sender = memberRepository.findById(requestDto.getSenderId())
+                .orElseThrow(() -> new IllegalArgumentException("Sender not found"));
+        ChatRoom chatRoom = chatRoomRepository.findById(requestDto.getChatRoomId())
+                .orElseThrow(() -> new IllegalArgumentException("Chat room not found"));
+
+        if (!AuthUtil.isAdmin() && (!AuthUtil.isEqualMember(sender.getId()) || !AuthUtil.isChatRoomMember(chatRoom))) {
+            throw new RuntimeException("권한없음");
+        }
+
+        String imageUrl;
+
+        try {
+            imageUrl = s3ImageUploadService.uploadImage(imageFile);
+        } catch (IOException e) {
+            throw new RuntimeException("이미지 업로드 실패", e);
+        }
+
         Message message = Message.builder()
                 .content(imageUrl)
                 .sender(sender)
